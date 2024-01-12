@@ -5,6 +5,12 @@ Teknologi yang digunakan adalah:
 - Kotlin (Jetpack Compose)
 - Ktor untuk HTTP Client
 
+Untuk penggunaan, registrasi sudah bisa dengan menggunakan nomor asli (OTP Sudah bekerja). 
+
+Namun jika ingin menggunakan nomor demo, dapat menggunakan:
+nomor: +6281-553-993-193
+OTP: 123456
+
 Kemudian untuk ssnya adalah: 
 
 
