@@ -6,6 +6,8 @@ Teknologi yang digunakan adalah:
 - Ktor untuk HTTP Client
 
 Kemudian untuk ssnya adalah: 
+
+
 <img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-29-37-679_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
 
 <img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-29-53-085_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
