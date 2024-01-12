@@ -32,6 +32,8 @@ Kemudian untuk ssnya adalah:
 
 <img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-30-41-734_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
 
+<img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-30-41-734_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
+
 <img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-30-45-023_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
 
 <img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-30-49-579_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
