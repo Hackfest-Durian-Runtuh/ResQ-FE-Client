@@ -1,8 +1,9 @@
+
 Sistem Pemanggilan Layanan Darurat Terpadu ini dirancang untuk mempercepat dan meningkatkan efisiensi penanganan gawat darurat di berbagai negara berkembang seperti Indonesia. Sistem ini memungkinkan pengguna untuk dapat mengakses nomor berbagai unit layanan darurat (ambulans, pemadam kebakaran, bantuan SAR, dan kepolisian) di setiap daerah. 
 
 Aplikasi juga memungkinkan pengguna menyimpan informasi pribadi serta rekam medis yang telah diisi sebelumnya Pre-Filled Information. Informasi tersebut akan secara otomatis terkirim saat panggilan darurat dilakukan tanpa perlu penyampaian secara berulang.
 
-Selain itu, terdapat fitur Live Tracking sehingga pengguna dan petugas lapangan dapat saling terhubung dan mendapatkan informasi update secara berkala terkait lokasi dan status penanganan.
+Selain itu, terdapat fitur Live Tracking sehingga pengguna dan petugas lapangan dapat saling terhubung dan mendapatkan informasi update secara berkala terkait lokasi dan status penanganan.
 
 Teknologi yang digunakan adalah:
 - Firebase
@@ -30,9 +31,7 @@ Kemudian untuk ssnya adalah:
 
 <img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-30-32-550_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
 
-<img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-30-41-734_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
-
-<img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-30-41-734_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
+<img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/WhatsApp%20Image%202024-01-12%20at%2022.57.46_db2d76cc.jpg?raw=true" alt="drawing" width="400"/>
 
 <img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-30-45-023_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
 
