@@ -55,14 +55,17 @@ class FirebaseFCMService : FirebaseMessagingService(){
         super.onNewToken(token)
         val firestore = FirebaseFirestore.getInstance()
         val auth = FirebaseAuth.getInstance()
-        firestore
-            .collection("fcm_token")
-            .document(auth.currentUser?.uid ?: "")
-            .set(
-                FcmTokenStruct(
-                    uid = auth.currentUser?.uid ?: "",
-                    token = token
+
+        auth.currentUser?.uid?.let { uid ->
+            firestore
+                .collection("fcm_token")
+                .document(uid)
+                .set(
+                    FcmTokenStruct(
+                        uid = auth.currentUser?.uid ?: "",
+                        token = token
+                    )
                 )
-            )
+        }
     }
 }

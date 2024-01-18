@@ -119,6 +119,15 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+
+    //Web RTC
+    implementation 'com.mesibo.api:webrtc:1.0.5'
+
+    //Websocket
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+
+    //Only usefull if run from emulator
+    implementation 'androidx.browser:browser:1.2.0'
 }
 
 kapt {

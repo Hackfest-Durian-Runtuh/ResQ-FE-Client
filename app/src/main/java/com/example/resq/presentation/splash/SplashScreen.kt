@@ -42,7 +42,7 @@ fun SplashScreen(navController: NavController) {
                             }
                         }
                         UserDataInputStatus.HAVE_NOT_INPUTTED -> {
-                            navController.navigate("${NavRoutes.USER_DATA_INPUT.name}/$phoneNumber") {
+                            navController.navigate(NavRoutes.BIODATA_FORM.name) {
                                 popUpTo(navController.graph.id) {
                                     inclusive = true
                                 }

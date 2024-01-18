@@ -1,6 +1,7 @@
 package com.example.resq.navhost
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -20,6 +21,7 @@ import com.example.resq.presentation.profile.ProfileScreen
 import com.example.resq.presentation.splash.SplashScreen
 import com.example.resq.presentation.user_data_input.UserDataInputScreen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,

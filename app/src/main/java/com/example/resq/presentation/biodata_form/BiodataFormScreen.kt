@@ -1,17 +1,24 @@
 package com.example.resq.presentation.biodata_form
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,9 +28,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -33,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.resq.helper.LoadingHandler
+import com.example.resq.helper.SnackbarHandler
 
 @ExperimentalMaterial3Api
 @Composable
@@ -69,6 +80,30 @@ fun BiodataFormScreen(
                     }
                 }
             )
+        },
+        bottomBar = {
+            BottomAppBar {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    onClick = {
+                        LoadingHandler.loading()
+                        viewModel.saveBiodata(
+                            onSuccess = {
+                                LoadingHandler.loading()
+                                SnackbarHandler.showSnackbar("Data berhasil disimpan")
+                            },
+                            onFailed = {
+                                LoadingHandler.loading()
+                                SnackbarHandler.showSnackbar(it.message.toString())
+                            }
+                        )
+                    }) {
+                    Text(text = "Simpan")
+                }
+            }
         }
     ) {
         Column(
@@ -96,15 +131,16 @@ fun BiodataFormScreen(
                         viewModel.fullname.value = it
                     },
                     placeholder = { Text(text = "Nama Lengkap") },
-                    label = {Text(text = "Nama Lengkap")})
+                    label = { Text(text = "Nama Lengkap") })
+
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.nickname.value,
                     onValueChange = {
-                        viewModel.nickname.value
+                        viewModel.nickname.value = it
                     },
                     placeholder = { Text(text = "Nama Panggilan") },
-                    label = {Text(text = "Nama Panggilan")})
+                    label = { Text(text = "Nama Panggilan") })
                 Column {
                     OutlinedTextField(
                         modifier = Modifier
@@ -151,6 +187,7 @@ fun BiodataFormScreen(
                                 text = { Text(text = it) },
                                 onClick = {
                                     viewModel.bloodType.value = it
+                                    viewModel.expandBloodType.value = false
                                 }
                             )
                         }
@@ -163,7 +200,7 @@ fun BiodataFormScreen(
                         viewModel.weight.value = it
                     },
                     placeholder = { Text(text = "Berat Badan (kg)") },
-                    label = {Text(text = "Nama Panggilan")})
+                    label = { Text(text = "Berat Badang (kg)") })
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.height.value,
@@ -171,7 +208,7 @@ fun BiodataFormScreen(
                         viewModel.height.value = it
                     },
                     placeholder = { Text(text = "Tinggi Badan (cm)") },
-                    label = {Text(text = "Tinggi Badan (cm)")})
+                    label = { Text(text = "Tinggi Badan (cm)") })
             }
 
             Column(
@@ -187,17 +224,18 @@ fun BiodataFormScreen(
                 )
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = viewModel.fullname.value,
+                    value = viewModel.nik.value,
                     onValueChange = {
                         viewModel.nik.value = it
                     },
                     placeholder = { Text(text = "NIK") },
-                    label = {Text(text = "NIK")})
+                    label = { Text(text = "NIK") })
+
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.tempatLahir.value,
                     onValueChange = {
-                        viewModel.nickname.value
+                        viewModel.tempatLahir.value = it
                     },
                     placeholder = { Text(text = "Tempat Lahir") },
                     label = { Text(text = "Tempat Lahir") })
@@ -205,7 +243,7 @@ fun BiodataFormScreen(
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.tanggalLahir.value,
                     onValueChange = {
-                        viewModel.weight.value = it
+                        viewModel.tanggalLahir.value = it
                     },
                     placeholder = { Text(text = "Tanggal Lahir (cth: 01/01/2001)") },
                     label = { Text(text = "Tanggal Lahir") })
@@ -213,7 +251,7 @@ fun BiodataFormScreen(
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.namaAsuransi.value,
                     onValueChange = {
-                        viewModel.height.value = it
+                        viewModel.namaAsuransi.value = it
                     },
                     placeholder = { Text(text = "Nama Asuransi (cth: BPJS)") },
                     label = { Text(text = "Nama Asuransi") })
@@ -221,10 +259,71 @@ fun BiodataFormScreen(
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.noAsuransi.value,
                     onValueChange = {
-                        viewModel.height.value = it
+                        viewModel.noAsuransi.value = it
                     },
                     placeholder = { Text(text = "Nomor Asuransi") },
-                    label = {Text(text = "No. Asuransi")})
+                    label = { Text(text = "No. Asuransi") })
+            }
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Riwayat Penyakit", style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFF151619),
+
+                        )
+                )
+
+                viewModel.penyakit.forEachIndexed { index, map ->
+                    if (index > 0) {
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp)
+                                .height(1.dp)
+                                .background(Color.DarkGray)
+                        )
+                    }
+
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = map.get("nama_penyakit")?.value ?: "",
+                        onValueChange = {
+                            map["nama_penyakit"]?.value = it
+                        },
+                        placeholder = { Text(text = "Nama Penyakit") },
+                        label = { Text(text = "Nama Penyakit") })
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = map.get("tahun_penyakit")?.value ?: "",
+                        onValueChange = {
+                            map["tahun_penyakit"]?.value = it
+                        },
+                        placeholder = { Text(text = "Tahun Terkena Penyakit") },
+                        label = { Text(text = "Tahun Terkena Penyakit") })
+
+                    if (index > 0) {
+                        Text(
+                            modifier = Modifier.clickable { viewModel.penyakit.removeAt(index) },
+                            text = "Hapus",
+                            color = Color.Red
+                        )
+                    }
+                }
+
+                Button(onClick = {
+                    viewModel.penyakit.add(
+                        mapOf(
+                            "nama_penyakit" to mutableStateOf(""),
+                            "tahun_penyakit" to mutableStateOf("")
+                        )
+                    )
+                }) {
+                    Text(text = "Tambah Riwayat Penyakit")
+                }
             }
         }
     }

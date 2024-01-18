@@ -1,10 +1,12 @@
 package com.example.resq.data
 
 import android.content.Context
+import android.util.Log
 import com.example.resq.data.room.RoomDb
 import com.example.resq.helper.UserDataInputStatus
 import com.example.resq.model.entity.FavoriteItemEntity
 import com.example.resq.model.external.MapboxGeocodingResponse
+import com.example.resq.model.struct.BiodataModel
 import com.example.resq.model.struct.CallModel
 import com.example.resq.model.struct.CallStatusModel
 import com.example.resq.model.struct.ContactModel
@@ -90,15 +92,19 @@ class Repository @Inject constructor(
                     return@addSnapshotListener
                 }
 
-                if ((value?.documents?.size ?: 0) > 0) {
-                    onSuccess(auth.currentUser?.phoneNumber ?: "", UserDataInputStatus.INPUTTED)
-                    return@addSnapshotListener
-                } else {
-                    onSuccess(
-                        auth.currentUser?.phoneNumber ?: "",
-                        UserDataInputStatus.HAVE_NOT_INPUTTED
-                    )
-                    return@addSnapshotListener
+                value?.documents?.let { documents ->
+                    Log.e("COBA", documents.toString())
+
+                    if (documents.size > 0) {
+                        onSuccess(auth.currentUser?.phoneNumber ?: "", UserDataInputStatus.INPUTTED)
+                        return@addSnapshotListener
+                    } else {
+                        onSuccess(
+                            auth.currentUser?.phoneNumber ?: "",
+                            UserDataInputStatus.HAVE_NOT_INPUTTED
+                        )
+                        return@addSnapshotListener
+                    }
                 }
             }
     }
@@ -130,6 +136,24 @@ class Repository @Inject constructor(
                 onFailed(it)
             }
     }
+
+    fun saveUserDataInputNew(
+        model: BiodataModel,
+        onSuccess: () -> Unit,
+        onFailed: (Exception) -> Unit
+    ) {
+        firestore
+            .collection("user")
+            .document(auth.currentUser?.uid ?: "")
+            .set(model)
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener {
+                onFailed(it)
+            }
+    }
+
 
     fun getAllEmergencyType(
         onSuccess: (List<EmergencyTypeModel>) -> Unit,
