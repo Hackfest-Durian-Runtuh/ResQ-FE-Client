@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Res Q</string>
+    <string name="app_name">ResQ</string>
     <string name="mapbox_access_token">sk.eyJ1IjoiZmFobWlndXRhd2FuIiwiYSI6ImNsbmVwdXAxcjBremEyam1uZGthdXhiMmUifQ.LR6usbmqClTCkQTAHFqFuw</string>
 </resources>
