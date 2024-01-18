@@ -1,4 +1,3 @@
-
 # Res-Q
 Sistem Pemanggilan Layanan Darurat Terpadu ini dirancang untuk mempercepat dan meningkatkan efisiensi penanganan gawat darurat di berbagai negara berkembang seperti Indonesia.
 
@@ -20,7 +19,7 @@ Untuk penggunaan, registrasi sudah bisa dengan menggunakan nomor asli (OTP Sudah
 
  - App Client: https://drive.google.com/file/d/1Vo8D_Az0xMTnkR7YVcAp2s6V3XpK2J2M/view?usp=sharing
  - App Driver: https://drive.google.com/file/d/1i2Dney8yWIY0H10hv9FczA_UdcSz8QWC/view?usp=sharing
- - Website Admin: 
+ - Website Admin: https://resq-admin.vercel.app/
 
 ## Kredensial
 Namun jika ingin menggunakan nomor demo, dapat menggunakan:
