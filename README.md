@@ -8,12 +8,15 @@ Aplikasi juga memungkinkan pengguna menyimpan informasi pribadi serta rekam medi
 
 Selain itu, terdapat fitur Live Tracking sehingga pengguna dan petugas lapangan dapat saling terhubung dan mendapatkan informasi update secara berkala terkait lokasi dan status penanganan.
 
-Teknologi yang digunakan adalah:
+## Tech Stack
+Teknologi yang digunakan untuk App Client dan Driver:
 - Firebase
 - Kotlin (Jetpack Compose)
 - Ktor untuk HTTP Client
 
-Untuk penggunaan, registrasi sudah bisa dengan menggunakan nomor asli (OTP Sudah bekerja). 
+Teknologi yang digunakan untuk Web Admin:
+- Firebase
+- NextJS
 
 ## Output
 
@@ -21,12 +24,19 @@ Untuk penggunaan, registrasi sudah bisa dengan menggunakan nomor asli (OTP Sudah
  - App Driver: https://drive.google.com/file/d/1i2Dney8yWIY0H10hv9FczA_UdcSz8QWC/view?usp=sharing
  - Website Admin: https://resq-admin.vercel.app/
 
-## Kredensial
-Namun jika ingin menggunakan nomor demo, dapat menggunakan:
+## Penggunaan
+### > Client
+Untuk penggunaan, registrasi sudah bisa dengan menggunakan nomor asli (OTP Sudah bekerja).  Namun jika ingin menggunakan nomor demo, dapat menggunakan:
  - nomor: +6281-553-993-193 
  - OTP: 123456
 
-Kemudian untuk ssnya adalah: 
+### > Driver
+Masuk secara langsung dengan menekan tombol pada driver yang diinginkan
+
+### > Admin
+Masuk dengan meng-*copy* id dari penyedia layanan emergency, kemudian *paste* di form yang disediakan. Kemudian masuk.
+
+## Screenshot dari Repository ini (APP Client) 
 
 <img src="https://github.com/Hackfest-Durian-Runtuh/ResQ-FE/blob/main/ss/Screenshot_2024-01-12-21-29-37-679_com.example.resq.jpg?raw=true" alt="drawing" width="400"/>
 
