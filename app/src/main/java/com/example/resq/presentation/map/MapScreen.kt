@@ -96,7 +96,7 @@ import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import kotlin.system.exitProcess
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MissingPermission")
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
@@ -229,17 +229,6 @@ fun MapScreen(
             },
             appDialogButtonOrientation = AppDialogButtonOrientation.VERTICAL
         )
-    }
-
-    if (ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        return
     }
 
     if (viewModel.pickedEmergencyProvider.value != null && viewModel.showEmergencyProviderSheet.value) {
