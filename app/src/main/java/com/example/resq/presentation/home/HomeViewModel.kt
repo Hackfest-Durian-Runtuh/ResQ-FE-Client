@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.resq.data.Repository
+import com.example.resq.model.domain.general.PhoneNumberDomain
 import com.example.resq.model.domain.home.HomeEmergencyTypeDomain
 import com.example.resq.model.entity.FavoriteItemEntity
 import com.example.resq.model.external.MapboxGeocodingResponse
@@ -33,6 +34,10 @@ class HomeViewModel @Inject constructor(
     val lastCallEmProvider = mutableStateOf<EmergencyProviderModel?>(null)
     val lastCallLocationResponse = mutableStateOf<MapboxGeocodingResponse?>(null)
     val callStatusMap = mutableMapOf<String, String>()
+
+    val calledContactNumber = mutableStateOf<PhoneNumberDomain?>(null)
+    val showPasienSheet = mutableStateOf(false)
+    val pasienList = mutableStateListOf<UserModel>()
 
     fun deleteFavoriteItem(item: FavoriteItemEntity) = repository.deleteFavoriteItem(item)
 
@@ -143,6 +148,21 @@ class HomeViewModel @Inject constructor(
                     it.toString()
                 )
             }
+        )
+
+        repository.getTopBiodataListExceptMe(
+            onSuccess = {
+                pasienList.clear()
+                pasienList.addAll(it)
+            },
+            onFailed = {}
+        )
+
+        repository.getUserInfo(
+            onSuccess = {
+                pasienList.add(it)
+            },
+            onFailed = {}
         )
     }
 }

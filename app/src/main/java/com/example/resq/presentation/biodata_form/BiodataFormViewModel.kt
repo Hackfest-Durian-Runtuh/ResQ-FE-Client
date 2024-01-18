@@ -101,4 +101,67 @@ class BiodataFormViewModel @Inject constructor(
             onFailed = onFailed
         )
     }
+
+    fun updateBiodataPasien(
+        biodata_id:String,
+        onSuccess: () -> Unit,
+        onFailed: (e: Exception) -> Unit
+    ) {
+        repository.saveBiodata(
+            model = UserModel(
+                uid = repository.uid(),
+                biodata_id = biodata_id,
+                phone_number = phoneNumber.value,
+                saya = false,
+                nik = nik.value,
+                asuransi = namaAsuransi.value,
+                nomor_asuransi = noAsuransi.value,
+                fullname = fullname.value,
+                nickname = nickname.value,
+                penyakit = penyakit.map {
+                    mapOf(
+                        "nama_penyakit" to (it["nama_penyakit"]?.value ?: ""),
+                        "tahun_penyakit" to (it["tahun_penyakit"]?.value ?: "")
+                    )
+                }.filter {
+                    !it["nama_penyakit"].isNullOrEmpty() && !it["tahun_penyakit"].isNullOrEmpty()
+                },
+                tempat_lahir = tempatLahir.value,
+                tinggi_badan = height.value,
+                tanggal_lahir = tanggalLahir.value,
+                berat_badan = weight.value,
+                golongan_darah = bloodType.value
+            ),
+            biodata_id = biodata_id,
+            onSuccess = onSuccess,
+            onFailed = onFailed
+        )
+    }
+
+    fun getBiodataDefault(
+        biodata_id: String
+    ) {
+        repository.getUserInfo(
+            uid = biodata_id,
+            onSuccess = {
+                fullname.value = it.fullname
+                nickname.value = it.nickname
+                bloodType.value = it.golongan_darah
+                weight.value = it.berat_badan
+                height.value = it.tinggi_badan
+                nik.value = it.nik
+                tempatLahir.value = it.tempat_lahir
+                tanggalLahir.value = it.tanggal_lahir
+                namaAsuransi.value = it.asuransi
+                noAsuransi.value = it.nomor_asuransi
+                penyakit.addAll(it.penyakit.map {
+                    mapOf(
+                        "nama_penyakit" to mutableStateOf(it.get("nama_penyakit") ?: ""),
+                        "tahun_penyakit" to mutableStateOf(it.get("tahun_penyakit") ?: "")
+                    )
+                })
+            },
+            onFailed = {}
+        )
+    }
 }

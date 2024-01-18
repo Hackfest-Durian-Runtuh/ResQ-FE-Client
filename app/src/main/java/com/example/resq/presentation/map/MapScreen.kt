@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.Settings
 import android.view.LayoutInflater
 import androidx.activity.compose.BackHandler
@@ -26,6 +27,9 @@ import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material.icons.filled.GpsNotFixed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -53,6 +57,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.resq.R
 import com.example.resq.databinding.MapboxViewBinding
@@ -68,6 +73,7 @@ import com.example.resq.mainViewModel
 import com.example.resq.model.entity.FavoriteItemEntity
 import com.example.resq.model.entity.FavoriteItemPhoneNumbers
 import com.example.resq.global_component.FavoriteButton
+import com.example.resq.model.domain.general.PhoneNumberDomain
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -236,10 +242,11 @@ fun MapScreen(
         return
     }
 
-    if (viewModel.pickedEmergencyProvider.value != null) {
+    if (viewModel.pickedEmergencyProvider.value != null && viewModel.showEmergencyProviderSheet.value) {
         ModalBottomSheet(
             onDismissRequest = {
                 viewModel.pickedEmergencyProvider.value = null
+                viewModel.showEmergencyProviderSheet.value = false
             }
         ) {
             Column(
@@ -326,37 +333,193 @@ fun MapScreen(
                             SnackbarHandler.showSnackbar("Nomor telah di-copy")
                         },
                         onCallClicked = { type, number ->
-                            when (type) {
-                                "wa" -> {
-                                    val numFix =
-                                        "https://api.whatsapp.com/send?phone=${
-                                            number.replace(
-                                                "+",
-                                                ""
-                                            )
-                                        }}"
-                                    val callIntent = Intent(Intent.ACTION_VIEW, Uri.parse(numFix))
-                                    context.startActivity(callIntent)
-                                }
-
-                                else -> {
-                                    val callUri = Uri.parse("tel:$number")
-                                    val callIntent = Intent(Intent.ACTION_DIAL, callUri)
-                                    context.startActivity(callIntent)
-                                }
-                            }
-
-                            viewModel.makeCallObjectInRealtimeDb(
-                                viewModel.pickedEmergencyProvider.value?.em_pvd_id ?: "",
-                                viewModel.userLong.value,
-                                viewModel.userLat.value
+                            viewModel.calledContactNumber.value = PhoneNumberDomain(
+                                contactType = type,
+                                phoneNumber = number
                             )
+
+                            viewModel.showPasienSheet.value = true
+                            viewModel.showEmergencyProviderSheet.value = false
                         },
                         enableCall = viewModel.availableTransportCount.value > 0,
                         copiedNumber = viewModel.copiedNumber.value,
                         phoneNumber = phoneNumber
                     )
                 }
+            }
+        }
+    }
+
+    if (viewModel.calledContactNumber.value != null && viewModel.showPasienSheet.value) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                viewModel.calledContactNumber.value = null
+                viewModel.showPasienSheet.value = false
+            },
+            containerColor = Color.White
+        ) {
+            NonLazyVerticalGrid(
+                columnCount = 2,
+                containerHorizontalPadding = 6.dp
+            ) {
+                item {
+                    viewModel
+                        .pasienList
+                        .filter { it.uid == it.biodata_id }
+                        .firstOrNull()
+                        ?.let { item ->
+                            ElevatedCard(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(6.dp),
+                                onClick = {
+                                    viewModel.makeCallObjectInRealtimeDb(
+                                        biodata_id = item.biodata_id,
+                                        viewModel.pickedEmergencyProvider.value?.em_pvd_id ?: "",
+                                        viewModel.userLong.value,
+                                        viewModel.userLat.value
+                                    )
+
+                                    viewModel.calledContactNumber.value?.let { contact ->
+                                        when (contact.contactType) {
+                                            "wa" -> {
+                                                val numFix =
+                                                    "https://api.whatsapp.com/send?phone=${
+                                                        contact.phoneNumber.replace(
+                                                            "+",
+                                                            ""
+                                                        )
+                                                    }}"
+                                                val callIntent =
+                                                    Intent(Intent.ACTION_VIEW, Uri.parse(numFix))
+                                                context.startActivity(callIntent)
+                                            }
+
+                                            else -> {
+                                                val callUri =
+                                                    Uri.parse("tel:${contact.phoneNumber}")
+                                                val callIntent = Intent(Intent.ACTION_DIAL, callUri)
+                                                context.startActivity(callIntent)
+                                            }
+                                        }
+                                    }
+                                },
+                                colors = CardDefaults.elevatedCardColors(
+                                    containerColor = Color.White
+                                ),
+                                elevation = CardDefaults.cardElevation(
+                                    defaultElevation = 2.dp
+                                )
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(12.dp),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.primary),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        AsyncImage(
+                                            modifier = Modifier.size(60.dp),
+                                            model = R.drawable.icon_dummy_pp,
+                                            contentDescription = ""
+                                        )
+                                    }
+                                    Text(text = "Saya")
+                                }
+                            }
+                        }
+                }
+
+                viewModel
+                    .pasienList
+                    .filter { it.uid != it.biodata_id }
+                    .forEach { item ->
+                        item {
+                            ElevatedCard(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(6.dp),
+                                onClick = {
+                                    viewModel.makeCallObjectInRealtimeDb(
+                                        biodata_id = item.biodata_id,
+                                        viewModel.pickedEmergencyProvider.value?.em_pvd_id ?: "",
+                                        viewModel.userLong.value,
+                                        viewModel.userLat.value
+                                    )
+
+                                    viewModel.calledContactNumber.value?.let { contact ->
+                                        when (contact.contactType) {
+                                            "wa" -> {
+                                                val numFix =
+                                                    "https://api.whatsapp.com/send?phone=${
+                                                        contact.phoneNumber.replace(
+                                                            "+",
+                                                            ""
+                                                        )
+                                                    }}"
+                                                val callIntent =
+                                                    Intent(Intent.ACTION_VIEW, Uri.parse(numFix))
+                                                context.startActivity(callIntent)
+                                            }
+
+                                            else -> {
+                                                val callUri =
+                                                    Uri.parse("tel:${contact.phoneNumber}")
+                                                val callIntent = Intent(Intent.ACTION_DIAL, callUri)
+                                                context.startActivity(callIntent)
+                                            }
+                                        }
+                                    }
+                                },
+                                colors = CardDefaults.elevatedCardColors(
+                                    containerColor = Color.White
+                                ),
+                                elevation = CardDefaults.cardElevation(
+                                    defaultElevation = 2.dp
+                                )
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(12.dp),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.primary),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        AsyncImage(
+                                            modifier = Modifier.size(60.dp),
+                                            model = R.drawable.icon_dummy_pp,
+                                            contentDescription = ""
+                                        )
+                                    }
+                                    Text(text = item.nickname)
+                                }
+                            }
+                        }
+                    }
+            }
+
+            Button(
+                modifier = Modifier
+                    .padding(6.dp)
+                    .fillMaxWidth(),
+                onClick = {
+                    viewModel.calledContactNumber.value = null
+                    viewModel.showPasienSheet.value = false
+                }
+            ) {
+                Text(text = "Tutup")
             }
         }
     }
@@ -463,6 +626,7 @@ fun MapScreen(
                             .background(EmergencyTypeIcon.getContainerColor(domain.em_type))
                             .clickable {
                                 viewModel.pickedEmergencyProvider.value = domain
+                                viewModel.showEmergencyProviderSheet.value = true
 
                                 viewModel.getLocationByLongLat(
                                     domain.longitude,

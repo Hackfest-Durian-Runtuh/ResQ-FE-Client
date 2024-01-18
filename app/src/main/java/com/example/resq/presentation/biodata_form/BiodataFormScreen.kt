@@ -57,7 +57,7 @@ fun BiodataFormScreen(
 
     LaunchedEffect(key1 = true) {
         if (id.isNotEmpty()) {
-            //TODO Call API Here
+            viewModel.getBiodataDefault(id)
         }
     }
 
@@ -65,7 +65,7 @@ fun BiodataFormScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(text = "Detail Biodata")
+                    Text(text = if (isSaya) "Registrasi Lanjutan" else "Detail Biodata")
                 },
                 navigationIcon = {
                     if (!isNewData) {
@@ -90,25 +90,39 @@ fun BiodataFormScreen(
                     onClick = {
                         LoadingHandler.loading()
 
-                        if(!isSaya){
-                            viewModel.saveBiodataPasien(
-                                onSuccess = {
-                                    LoadingHandler.loading()
-                                    SnackbarHandler.showSnackbar("Data berhasil disimpan")
-                                },
-                                onFailed = {
-                                    LoadingHandler.loading()
-                                    SnackbarHandler.showSnackbar(it.message.toString())
-                                }
-                            )
+                        if(id.isEmpty()){
+                            if(!isSaya){
+                                viewModel.saveBiodataPasien(
+                                    onSuccess = {
+                                        LoadingHandler.dismiss()
+                                        SnackbarHandler.showSnackbar("Data berhasil disimpan")
+                                    },
+                                    onFailed = {
+                                        LoadingHandler.dismiss()
+                                        SnackbarHandler.showSnackbar(it.message.toString())
+                                    }
+                                )
+                            }else {
+                                viewModel.saveBiodataSaya(
+                                    onSuccess = {
+                                        LoadingHandler.dismiss()
+                                        SnackbarHandler.showSnackbar("Data berhasil disimpan")
+                                    },
+                                    onFailed = {
+                                        LoadingHandler.dismiss()
+                                        SnackbarHandler.showSnackbar(it.message.toString())
+                                    }
+                                )
+                            }
                         }else {
-                            viewModel.saveBiodataSaya(
+                            viewModel.updateBiodataPasien(
+                                biodata_id = id,
                                 onSuccess = {
-                                    LoadingHandler.loading()
+                                    LoadingHandler.dismiss()
                                     SnackbarHandler.showSnackbar("Data berhasil disimpan")
                                 },
                                 onFailed = {
-                                    LoadingHandler.loading()
+                                    LoadingHandler.dismiss()
                                     SnackbarHandler.showSnackbar(it.message.toString())
                                 }
                             )

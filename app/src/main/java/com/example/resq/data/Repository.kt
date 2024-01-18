@@ -469,7 +469,7 @@ class Repository @Inject constructor(
                                         uid = it["uid"] as String,
                                         biodata_id = it["biodata_id"] as String,
                                         phone_number = it["phone_number"] as String,
-                                        saya = it["isSaya"] as Boolean,
+                                        saya = it["saya"] as Boolean,
                                         nik = it["nik"] as String,
                                         asuransi = it["asuransi"] as String,
                                         nomor_asuransi = it["nomor_asuransi"] as String,
@@ -514,7 +514,7 @@ class Repository @Inject constructor(
                                         uid = it["uid"] as String,
                                         biodata_id = it["biodata_id"] as String,
                                         phone_number = it["phone_number"] as String,
-                                        saya = it["isSaya"] as Boolean,
+                                        saya = it["saya"] as Boolean,
                                         nik = it["nik"] as String,
                                         asuransi = it["asuransi"] as String,
                                         nomor_asuransi = it["nomor_asuransi"] as String,
@@ -536,12 +536,13 @@ class Repository @Inject constructor(
     }
 
     fun makeCallObjectInRealtimeDb(
+        biodata_id: String,
         emPvdId: String,
         userLong: Double,
         userLat: Double
     ) {
         val em_call_id = UUID.randomUUID().toString()
-        val uid = auth.currentUser?.uid ?: ""
+        val uid = biodata_id
         val phoneNumber = auth.currentUser?.phoneNumber ?: ""
         val em_transport_id = "." //This is default value
         val transport_long = "." //This is default value

@@ -1,13 +1,18 @@
 package com.example.resq.presentation.biodata
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -52,33 +57,36 @@ fun BiodataScreen(
             )
         },
         floatingActionButton = {
-            ElevatedButton(
-                onClick = {
-                    navController.navigate("${NavRoutes.BIODATA_FORM.name}?isSaya=false")
-                },
-                elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 2.dp),
-                colors = ButtonDefaults.elevatedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+            if(viewModel.biodataList.isNotEmpty()){
+                ElevatedButton(
+                    onClick = {
+                        navController.navigate("${NavRoutes.BIODATA_FORM.name}?isSaya=false")
+                    },
+                    elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 2.dp),
+                    colors = ButtonDefaults.elevatedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "")
-                    Text(text = "Tambah Biodata")
+                    Row(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                        Text(text = "Tambah Biodata")
+                    }
                 }
             }
         },
         floatingActionButtonPosition = FabPosition.End
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(it),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            //TODO Uncomment this if own biodata is appears here
+        if (viewModel.biodataList.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier.padding(it),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                //TODO Uncomment this if own biodata is appears here
 //            item {
 //                viewModel
 //                    .biodataList
@@ -93,20 +101,41 @@ fun BiodataScreen(
 //                    }
 //            }
 
-            items(
-                viewModel
-                    .biodataList
-                    .filter { it.uid != it.biodata_id },
-                key = { it.biodata_id }
-            ) { item ->
-                PasienCard(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    nickname = item.nickname,
-                    name = item.fullname,
-                    onEditClick = {
-                        navController.navigate("${NavRoutes.BIODATA_FORM.name}?isSaya=false/${item.biodata_id}")
+                items(
+                    viewModel
+                        .biodataList
+                        .filter { it.uid != it.biodata_id },
+                    key = { it.biodata_id }
+                ) { item ->
+                    PasienCard(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        nickname = item.nickname,
+                        name = item.fullname,
+                        onEditClick = {
+                            navController.navigate("${NavRoutes.BIODATA_FORM.name}?isSaya=false/${item.biodata_id}")
+                        }
+                    )
+                }
+            }
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        modifier = Modifier.size(120.dp),
+                        tint = MaterialTheme.colorScheme.primaryContainer,
+                        imageVector = Icons.Default.Block,
+                        contentDescription = ""
+                    )
+
+                    Text(text = "Tidak ada Biodata")
+
+                    Button(onClick = {
+                        navController.navigate("${NavRoutes.BIODATA_FORM.name}?isSaya=false")
+                    }) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                        Text(text = "Tambahkan Biodata")
                     }
-                )
+                }
             }
         }
     }

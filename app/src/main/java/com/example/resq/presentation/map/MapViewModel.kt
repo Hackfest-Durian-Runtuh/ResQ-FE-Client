@@ -11,6 +11,7 @@ import com.example.resq.model.domain.map.MapEmergencyProviderDomain
 import com.example.resq.model.domain.map.MapEmergencyTypeDomain
 import com.example.resq.model.entity.FavoriteItemEntity
 import com.example.resq.model.external.MapboxGeocodingResponse
+import com.example.resq.model.struct.UserModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,6 +37,11 @@ class MapViewModel @Inject constructor(
     val emProviders = mutableStateListOf<MapEmergencyProviderDomain>()
     val emPhoneNumbers = mutableStateListOf<PhoneNumberDomain>()
 
+    val showPasienSheet = mutableStateOf(false)
+    val showEmergencyProviderSheet = mutableStateOf(false)
+
+    val calledContactNumber = mutableStateOf<PhoneNumberDomain?>(null)
+
     val pickedEmergencyProvider = mutableStateOf<MapEmergencyProviderDomain?>(null)
     val pickedEmergencyProviderLocation = mutableStateOf<MapboxGeocodingResponse?>(null)
     val pickedEmTypeId = mutableStateOf("")
@@ -43,6 +49,8 @@ class MapViewModel @Inject constructor(
     val favoriteItems = mutableStateListOf<FavoriteItemEntity>()
 
     val availableTransportCount = mutableStateOf(0)
+
+    val pasienList = mutableStateListOf<UserModel>()
 
     fun getAllEmergencyProvider() {
         repository.getAllEmergencyProvider(
@@ -92,14 +100,19 @@ class MapViewModel @Inject constructor(
     }
 
     fun makeCallObjectInRealtimeDb(
+        biodata_id: String,
         emPvdId: String,
         userLong: Double,
         userLat: Double
     ) {
         repository.makeCallObjectInRealtimeDb(
-            emPvdId, userLong, userLat
+            biodata_id,
+            emPvdId,
+            userLong,
+            userLat
         )
     }
+
     fun getContactByProviderId(
         emPvdId: String
     ) {
@@ -181,6 +194,21 @@ class MapViewModel @Inject constructor(
             onFailed = {
                 Log.e("ERROR", it.toString())
             }
+        )
+
+        repository.getTopBiodataListExceptMe(
+            onSuccess = {
+                pasienList.clear()
+                pasienList.addAll(it)
+            },
+            onFailed = {}
+        )
+
+        repository.getUserInfo(
+            onSuccess = {
+                pasienList.add(it)
+            },
+            onFailed = {}
         )
     }
 }

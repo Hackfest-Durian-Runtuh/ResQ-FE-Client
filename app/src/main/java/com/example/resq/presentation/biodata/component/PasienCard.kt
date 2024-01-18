@@ -76,7 +76,7 @@ fun PasienCard(
                 }
             }
 
-            Button(shape = RoundedCornerShape(Int.MAX_VALUE.dp), onClick = { /*TODO*/ }) {
+            Button(shape = RoundedCornerShape(Int.MAX_VALUE.dp), onClick = onEditClick) {
                 Text(text = "Edit")
             }
         }
