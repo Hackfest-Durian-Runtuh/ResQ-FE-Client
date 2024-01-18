@@ -83,7 +83,7 @@ fun ProfileScreen(
                 )
 
                 Text(
-                    text = viewModel.userInfo.value?.name ?: "...",
+                    text = viewModel.userInfo.value?.fullname ?: "...",
                     style = MaterialTheme.typography.headlineSmall
                 )
 
@@ -99,7 +99,7 @@ fun ProfileScreen(
             }
 
             ProfileInformationCard(
-                phoneNumber = viewModel.userInfo.value?.phone_number ?: "...",
+                phoneNumber = viewModel.userInfo.value?.fullname ?: "...",
                 nik = viewModel.userInfo.value?.nik ?: "..."
             )
 
@@ -113,7 +113,7 @@ fun ProfileScreen(
                     }
                 },
                 onBiodataClicked = {
-                    navController.navigate(NavRoutes.BIODATA_FORM.name)
+                    navController.navigate(NavRoutes.BIODATA.name)
                 }
             )
         }

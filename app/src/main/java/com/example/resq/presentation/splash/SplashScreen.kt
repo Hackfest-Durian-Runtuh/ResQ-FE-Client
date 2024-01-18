@@ -1,10 +1,12 @@
 package com.example.resq.presentation.splash
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,44 +17,48 @@ import coil.compose.AsyncImage
 import com.example.resq.R
 import com.example.resq.helper.UserDataInputStatus
 import com.example.resq.navhost.NavRoutes
+import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController) {
     val viewmodel = hiltViewModel<SplashViewModel>()
 
-    viewmodel.precheck(
-        onLoginChecked = { login ->
-            if(!login){
-                navController.navigate(NavRoutes.LOGIN.name) {
-                    popUpTo(navController.graph.id) {
-                        inclusive = true
+    LaunchedEffect(key1 = true) {
+        delay(2000)
+        viewmodel.precheck(
+            onLoginChecked = { login ->
+                if(!login){
+                    navController.navigate(NavRoutes.LOGIN.name) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
                     }
                 }
+            },
+            onUserDataInputStatusCheck = { phoneNumber, status ->
+                viewmodel.handleFcmToken(
+                    onSuccess = {
+                        when(status){
+                            UserDataInputStatus.INPUTTED -> {
+                                navController.navigate(NavRoutes.BERANDA.name) {
+                                    popUpTo(navController.graph.id) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                            UserDataInputStatus.HAVE_NOT_INPUTTED -> {
+                                navController.navigate("${NavRoutes.BIODATA_FORM.name}?isSaya=true") {
+                                    popUpTo(navController.graph.id) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                )
             }
-        },
-        onUserDataInputStatusCheck = { phoneNumber, status ->
-            viewmodel.handleFcmToken(
-                onSuccess = {
-                    when(status){
-                        UserDataInputStatus.INPUTTED -> {
-                            navController.navigate(NavRoutes.BERANDA.name) {
-                                popUpTo(navController.graph.id) {
-                                    inclusive = true
-                                }
-                            }
-                        }
-                        UserDataInputStatus.HAVE_NOT_INPUTTED -> {
-                            navController.navigate(NavRoutes.BIODATA_FORM.name) {
-                                popUpTo(navController.graph.id) {
-                                    inclusive = true
-                                }
-                            }
-                        }
-                    }
-                }
-            )
-        }
-    )
+        )
+    }
 
     Box(
         modifier = Modifier

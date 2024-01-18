@@ -85,7 +85,7 @@ fun HomeScreen(
         item {
             HomeProfileSection(
                 modifier = Modifier.padding(top = 16.dp),
-                name = viewModel.userInfo.value?.name ?: "...",
+                name = viewModel.userInfo.value?.fullname ?: "...",
                 location = "Jawa Timur, Indonesia",
                 onRiwayatClick = {
                     navController.navigate(

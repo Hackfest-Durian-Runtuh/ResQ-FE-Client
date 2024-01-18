@@ -25,10 +25,12 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PasienCard(
     modifier: Modifier = Modifier,
+    onEditClick: () -> Unit,
     nickname: String,
     name: String
 ) {
     ElevatedCard(
+        modifier = modifier,
         colors = CardDefaults.elevatedCardColors(
             contentColor = MaterialTheme.colorScheme.onSurface,
             containerColor = MaterialTheme.colorScheme.onPrimary
@@ -72,12 +74,11 @@ fun PasienCard(
                         maxLines = 1
                     )
                 }
-
-                Button(shape = RoundedCornerShape(Int.MAX_VALUE.dp), onClick = { /*TODO*/ }) {
-                    Text(text = "Edit")
-                }
             }
 
+            Button(shape = RoundedCornerShape(Int.MAX_VALUE.dp), onClick = { /*TODO*/ }) {
+                Text(text = "Edit")
+            }
         }
     }
 }

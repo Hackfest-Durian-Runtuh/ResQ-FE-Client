@@ -1,19 +1,16 @@
 package com.example.resq.data
 
 import android.content.Context
-import android.util.Log
 import com.example.resq.data.room.RoomDb
 import com.example.resq.helper.UserDataInputStatus
 import com.example.resq.model.entity.FavoriteItemEntity
 import com.example.resq.model.external.MapboxGeocodingResponse
-import com.example.resq.model.struct.BiodataModel
 import com.example.resq.model.struct.CallModel
 import com.example.resq.model.struct.CallStatusModel
 import com.example.resq.model.struct.ContactModel
 import com.example.resq.model.struct.EmergencyProviderModel
 import com.example.resq.model.struct.EmergencyTypeModel
 import com.example.resq.model.struct.UserModel
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
@@ -93,8 +90,6 @@ class Repository @Inject constructor(
                 }
 
                 value?.documents?.let { documents ->
-                    Log.e("COBA", documents.toString())
-
                     if (documents.size > 0) {
                         onSuccess(auth.currentUser?.phoneNumber ?: "", UserDataInputStatus.INPUTTED)
                         return@addSnapshotListener
@@ -109,42 +104,43 @@ class Repository @Inject constructor(
             }
     }
 
-    fun saveUserDataInput(
-        phoneNumber: String,
-        name: String,
-        nik: String,
-        onSuccess: () -> Unit,
-        onFailed: (Exception) -> Unit
-    ) {
-        firestore
-            .collection("user")
-            .document(auth.currentUser?.uid ?: "")
-            .set(
-                UserModel(
-                    uid = auth.currentUser?.uid ?: "",
-                    name = name,
-                    nik = nik,
-                    phone_number = phoneNumber,
-                    admin = false,
-                    created_at = Timestamp.now()
-                )
-            )
-            .addOnSuccessListener {
-                onSuccess()
-            }
-            .addOnFailureListener {
-                onFailed(it)
-            }
-    }
+//    fun saveUserDataInput(
+//        phoneNumber: String,
+//        name: String,
+//        nik: String,
+//        onSuccess: () -> Unit,
+//        onFailed: (Exception) -> Unit
+//    ) {
+//        firestore
+//            .collection("user")
+//            .document(auth.currentUser?.uid ?: "")
+//            .set(
+//                UserModel(
+//                    uid = auth.currentUser?.uid ?: "",
+//                    name = name,
+//                    nik = nik,
+//                    phone_number = phoneNumber,
+//                    admin = false,
+//                    created_at = Timestamp.now()
+//                )
+//            )
+//            .addOnSuccessListener {
+//                onSuccess()
+//            }
+//            .addOnFailureListener {
+//                onFailed(it)
+//            }
+//    }
 
-    fun saveUserDataInputNew(
-        model: BiodataModel,
+    fun saveBiodata(
+        model: UserModel,
+        biodata_id: String,
         onSuccess: () -> Unit,
         onFailed: (Exception) -> Unit
     ) {
         firestore
             .collection("user")
-            .document(auth.currentUser?.uid ?: "")
+            .document(biodata_id)
             .set(model)
             .addOnSuccessListener {
                 onSuccess()
@@ -430,15 +426,113 @@ class Repository @Inject constructor(
                     onSuccess(
                         UserModel(
                             uid = it["uid"] as String,
-                            name = it["name"] as String,
-                            nik = it["nik"] as String,
+                            biodata_id = it["biodata_id"] as String,
                             phone_number = it["phone_number"] as String,
-                            admin = it["admin"] as Boolean,
-                            created_at = it["created_at"] as Timestamp
+                            saya = it["saya"] as Boolean,
+                            nik = it["nik"] as String,
+                            asuransi = it["asuransi"] as String,
+                            nomor_asuransi = it["nomor_asuransi"] as String,
+                            fullname = it["fullname"] as String,
+                            nickname = it["nickname"] as String,
+                            penyakit = it["penyakit"] as List<Map<String, String>>,
+                            tempat_lahir = it["tempat_lahir"] as String,
+                            tinggi_badan = it["tinggi_badan"] as String,
+                            tanggal_lahir = it["tanggal_lahir"] as String,
+                            berat_badan = it["berat_badan"] as String,
+                            golongan_darah = it["golongan_darah"] as String
                         )
                     )
                 }
             }
+    }
+
+    fun getBiodataListExceptMe(
+        onSuccess: (List<UserModel>) -> Unit,
+        onFailed: (Exception) -> Unit
+    ) {
+        uid().let { uidNotNull ->
+            firestore
+                .collection("user")
+                .whereEqualTo("uid", uidNotNull)
+                .whereNotEqualTo("biodata_id", uidNotNull)
+                .addSnapshotListener { value, error ->
+                    if (error != null) {
+                        onFailed(error)
+                        return@addSnapshotListener
+                    }
+
+                    value?.documents.let { list ->
+                        list?.let { listNotNull ->
+                            onSuccess(
+                                listNotNull.map {
+                                    UserModel(
+                                        uid = it["uid"] as String,
+                                        biodata_id = it["biodata_id"] as String,
+                                        phone_number = it["phone_number"] as String,
+                                        saya = it["isSaya"] as Boolean,
+                                        nik = it["nik"] as String,
+                                        asuransi = it["asuransi"] as String,
+                                        nomor_asuransi = it["nomor_asuransi"] as String,
+                                        fullname = it["fullname"] as String,
+                                        nickname = it["nickname"] as String,
+                                        penyakit = it["penyakit"] as List<Map<String, String>>,
+                                        tempat_lahir = it["tempat_lahir"] as String,
+                                        tinggi_badan = it["tinggi_badan"] as String,
+                                        tanggal_lahir = it["tanggal_lahir"] as String,
+                                        berat_badan = it["berat_badan"] as String,
+                                        golongan_darah = it["golongan_darah"] as String
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
+    fun getTopBiodataListExceptMe(
+        onSuccess: (List<UserModel>) -> Unit,
+        onFailed: (Exception) -> Unit
+    ) {
+        uid().let { uidNotNull ->
+            firestore
+                .collection("user")
+                .whereEqualTo("uid", uidNotNull)
+                .whereNotEqualTo("biodata_id", uidNotNull)
+                .limit(5)
+                .addSnapshotListener { value, error ->
+                    if (error != null) {
+                        onFailed(error)
+                        return@addSnapshotListener
+                    }
+
+                    value?.documents.let { list ->
+                        list?.let { listNotNull ->
+                            onSuccess(
+                                listNotNull.map {
+                                    UserModel(
+                                        uid = it["uid"] as String,
+                                        biodata_id = it["biodata_id"] as String,
+                                        phone_number = it["phone_number"] as String,
+                                        saya = it["isSaya"] as Boolean,
+                                        nik = it["nik"] as String,
+                                        asuransi = it["asuransi"] as String,
+                                        nomor_asuransi = it["nomor_asuransi"] as String,
+                                        fullname = it["fullname"] as String,
+                                        nickname = it["nickname"] as String,
+                                        penyakit = it["penyakit"] as List<Map<String, String>>,
+                                        tempat_lahir = it["tempat_lahir"] as String,
+                                        tinggi_badan = it["tinggi_badan"] as String,
+                                        tanggal_lahir = it["tanggal_lahir"] as String,
+                                        berat_badan = it["berat_badan"] as String,
+                                        golongan_darah = it["golongan_darah"] as String
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+        }
     }
 
     fun makeCallObjectInRealtimeDb(

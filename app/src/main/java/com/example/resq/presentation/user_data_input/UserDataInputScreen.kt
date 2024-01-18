@@ -33,93 +33,93 @@ fun UserDataInputScreen(
     phoneNumber: String,
     navController: NavController
 ) {
-    val viewModel = hiltViewModel<UserDataInputViewModel>()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        AsyncImage(
-            modifier = Modifier
-                .padding(horizontal = 32.dp)
-                .padding(top = 128.dp),
-            model = R.drawable.ic_splash,
-            contentDescription = ""
-        )
-
-        Column(
-            modifier = Modifier.padding(vertical = 64.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Column {
-                Text(text = "Daftar", style = MaterialTheme.typography.headlineMedium)
-                Text(text = "Mohon masukkan informasi akun Anda untuk melanjutkan pendaftaran.")
-            }
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = phoneNumber,
-                onValueChange = {},
-                enabled = false,
-                readOnly = true,
-                label = {
-                    Text(text = "Nomor Telepon", color = Color.LightGray)
-                }
-            )
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = viewModel.nama.value,
-                onValueChange = {
-                    viewModel.nama.value = it
-                },
-                label = {
-                    Text(text = "Nama")
-                }
-            )
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = viewModel.nik.value,
-                onValueChange = {
-                    viewModel.nik.value = it
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = {
-                    Text(text = "NIK (Nomor Induk Kependudukan)")
-                }
-            )
-        }
-
-        Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
-            Text(text = "Dengan masuk atau mendaftar, saya setuju dengan Persyaratan Layanan dan Kebijakan Privasi.")
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    LoadingHandler.loading()
-                    viewModel.saveUserDataInput(
-                        phoneNumber = phoneNumber,
-                        name = viewModel.nama.value,
-                        nik = viewModel.nik.value,
-                        onSuccess = {
-                            LoadingHandler.dismiss()
-                            navController.navigate(NavRoutes.BERANDA.name){
-                                popUpTo(navController.graph.id){
-                                    inclusive = true
-                                }
-                            }
-                            SnackbarHandler.showSnackbar("Berhasil registrasi, selamat menikmati semua fitur di OneConnect")
-                        },
-                        onFailed = {
-                            LoadingHandler.dismiss()
-                            SnackbarHandler.showSnackbar("ERROR: $it")
-                        }
-                    )
-                }
-            ) {
-                Text(text = "Mendaftar", color = MaterialTheme.colorScheme.onPrimary)
-            }
-        }
-    }
+//    val viewModel = hiltViewModel<UserDataInputViewModel>()
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(horizontal = 16.dp)
+//            .verticalScroll(rememberScrollState()),
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        AsyncImage(
+//            modifier = Modifier
+//                .padding(horizontal = 32.dp)
+//                .padding(top = 128.dp),
+//            model = R.drawable.ic_splash,
+//            contentDescription = ""
+//        )
+//
+//        Column(
+//            modifier = Modifier.padding(vertical = 64.dp),
+//            verticalArrangement = Arrangement.spacedBy(8.dp)
+//        ) {
+//            Column {
+//                Text(text = "Daftar", style = MaterialTheme.typography.headlineMedium)
+//                Text(text = "Mohon masukkan informasi akun Anda untuk melanjutkan pendaftaran.")
+//            }
+//            OutlinedTextField(
+//                modifier = Modifier.fillMaxWidth(),
+//                value = phoneNumber,
+//                onValueChange = {},
+//                enabled = false,
+//                readOnly = true,
+//                label = {
+//                    Text(text = "Nomor Telepon", color = Color.LightGray)
+//                }
+//            )
+//
+//            OutlinedTextField(
+//                modifier = Modifier.fillMaxWidth(),
+//                value = viewModel.nama.value,
+//                onValueChange = {
+//                    viewModel.nama.value = it
+//                },
+//                label = {
+//                    Text(text = "Nama")
+//                }
+//            )
+//
+//            OutlinedTextField(
+//                modifier = Modifier.fillMaxWidth(),
+//                value = viewModel.nik.value,
+//                onValueChange = {
+//                    viewModel.nik.value = it
+//                },
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//                label = {
+//                    Text(text = "NIK (Nomor Induk Kependudukan)")
+//                }
+//            )
+//        }
+//
+//        Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+//            Text(text = "Dengan masuk atau mendaftar, saya setuju dengan Persyaratan Layanan dan Kebijakan Privasi.")
+//            Button(
+//                modifier = Modifier.fillMaxWidth(),
+//                onClick = {
+//                    LoadingHandler.loading()
+//                    viewModel.saveUserDataInput(
+//                        phoneNumber = phoneNumber,
+//                        name = viewModel.nama.value,
+//                        nik = viewModel.nik.value,
+//                        onSuccess = {
+//                            LoadingHandler.dismiss()
+//                            navController.navigate(NavRoutes.BERANDA.name){
+//                                popUpTo(navController.graph.id){
+//                                    inclusive = true
+//                                }
+//                            }
+//                            SnackbarHandler.showSnackbar("Berhasil registrasi, selamat menikmati semua fitur di OneConnect")
+//                        },
+//                        onFailed = {
+//                            LoadingHandler.dismiss()
+//                            SnackbarHandler.showSnackbar("ERROR: $it")
+//                        }
+//                    )
+//                }
+//            ) {
+//                Text(text = "Mendaftar", color = MaterialTheme.colorScheme.onPrimary)
+//            }
+//        }
+//    }
 }

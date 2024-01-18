@@ -115,36 +115,45 @@ fun AppNavHost(
 
         composable(
             route = NavRoutes.HISTORY.name
-        ){
+        ) {
             HistoryScreen(navController = navController)
         }
 
         composable(
             route = NavRoutes.BIODATA.name
-        ){
+        ) {
             BiodataScreen(navController = navController)
         }
 
         composable(
-            route = NavRoutes.BIODATA_FORM.name
-        ){
+            route = "${NavRoutes.BIODATA_FORM.name}?isSaya={is_saya}",
+            arguments = listOf(
+                navArgument("is_saya") {
+                    type = NavType.BoolType
+                }
+            )
+        ) {
+            val isSaya = it.arguments?.getBoolean("is_saya") ?: false
+
             // BIODATA FORM BARU
-            BiodataFormScreen(navController = navController)
+            BiodataFormScreen(navController = navController, isSaya = isSaya)
         }
 
         composable(
-            route = "${NavRoutes.BIODATA_FORM.name}/{id}",
+            route = "${NavRoutes.BIODATA_FORM.name}?isSaya={is_saya}/{id}",
             arguments = listOf(
-                navArgument("id"){
+                navArgument("id") {
                     type = NavType.StringType
                 }
             )
-        ){
+        ) {
             // BIODATA FORM LAMA
             val id = it.arguments?.getString("id") ?: ""
+            val isSaya = it.arguments?.getBoolean("is_saya") ?: false
 
             BiodataFormScreen(
                 id = id,
+                isSaya = isSaya,
                 isNewData = false,
                 navController = navController
             )

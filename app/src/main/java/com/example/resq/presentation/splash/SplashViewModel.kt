@@ -1,5 +1,6 @@
 package com.example.resq.presentation.splash
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.resq.data.Repository
@@ -21,16 +22,17 @@ class SplashViewModel @Inject constructor(
         onLoginChecked: (isLogin: Boolean) -> Unit,
         onUserDataInputStatusCheck: (String, UserDataInputStatus) -> Unit
     ) {
-        viewModelScope.launch {
-            val loginStatus = repository.isLogin()
-            delay(2000)
-            onLoginChecked(loginStatus)
+        val loginStatus = repository.isLogin()
+        onLoginChecked(loginStatus)
 
-            if(loginStatus){
+        repository.uid()?.let { uid ->
+            Log.e("COY", "HALOOO")
+            Log.e("UID", uid)
+            if (loginStatus) {
                 repository.checkUserInputDataStatus(
-                    uid = repository.uid(),
+                    uid = uid,
                     onSuccess = { phoneNumber, status ->
-                        onUserDataInputStatusCheck(phoneNumber, status)
+                            onUserDataInputStatusCheck(phoneNumber, status)
                     },
                     onFailed = {
                         //TODO
@@ -41,8 +43,8 @@ class SplashViewModel @Inject constructor(
     }
 
     fun handleFcmToken(
-        onSuccess:() -> Unit
-    ){
+        onSuccess: () -> Unit
+    ) {
         val firestore = FirebaseFirestore.getInstance()
         val auth = FirebaseAuth.getInstance()
         val fcm = FirebaseMessaging.getInstance()
